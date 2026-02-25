@@ -461,26 +461,29 @@ function buildScorecards(){
 
 function fetchFreshData(){
 
-  document.getElementById("refreshSpinner").style.display="block";
+  document.getElementById("refreshSpinner").style.display = "block";
 
   fetch("https://script.google.com/macros/s/AKfycbyqQEUYoEMP1tMddg6y55MNkINmuNCP7Iqnn9Osg1L7C7jN0yZSOo49j39MSXMUXBhe6g/exec")
-  .then(response => response.json())
-  .then(data => init(data));
+    .then(response => response.json())
+    .then(newData => {
 
-    document.getElementById("refreshSpinner").style.display="none";
+      document.getElementById("refreshSpinner").style.display = "none";
 
-    const newSnapshot = JSON.stringify(newData);
+      const newSnapshot = JSON.stringify(newData);
 
-    if(newSnapshot===PREVIOUS_DATA_SNAPSHOT) return;
+      if(newSnapshot === PREVIOUS_DATA_SNAPSHOT) return;
 
-    PREVIOUS_DATA_SNAPSHOT=newSnapshot;
-    DATA=newData;
+      PREVIOUS_DATA_SNAPSHOT = newSnapshot;
+      DATA = newData;
 
-    buildScorecards();
-    renderTable();
-    updateLastUpdated();
-
-  }).getAllData();
+      buildScorecards();
+      renderTable();
+      updateLastUpdated();
+    })
+    .catch(err => {
+      console.error("Fetch error:", err);
+      document.getElementById("refreshSpinner").style.display = "none";
+    });
 }
 
 function updateLastUpdated(){
