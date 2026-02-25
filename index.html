@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+ <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+
+body {
+  background:#121212;
+  color:#ffffff;
+  font-family:'Comfortaa', sans-serif;   /* 👈 DEFAULT BACK TO COMFORTAA */
+  font-size:13px;
+}
+
+  .card { 
+    background:#1e1e1e; 
+    border:none; 
+  }
+
+/* ===== BLUE HIGHLIGHT ===== */
+
+.highlight-blue {
+  background: rgba(59, 200, 246, 0.25);  /* soft blue */
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ===== HERO HEADER ===== */
+
+.hero-header {
+  position:relative;
+  width:100%;
+  height:360px;
+  border-radius:18px;
+  overflow:hidden;
+  background-image:url(https://i.imgur.com/Jfn21yJ.jpeg);
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+
+.hero-overlay {
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    rgba(0,0,0,0.65),
+    rgba(0,0,0,0.45)
+  );
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.hero-title {
+  font-family:'Comfortaa', sans-serif;
+  font-size:2.8rem;
+  font-weight:800;
+  color:#ffffff;
+  text-align:center;
+  letter-spacing:1px;
+}
+
+@media (max-width: 768px){
+  .hero-header { height:180px; }
+  .hero-title { font-size:1.8rem; }
+}
+
+
+
+  /* ===== PILL BUTTONS ===== */
+
+  .pill {
+  font-family:'Inter', sans-serif;   /* 👈 ONLY PILLS USE INTER */
+  border:1px solid #444;
+  padding:8px 18px;
+  border-radius:50px;
+  background:#1e1e1e;
+  cursor:pointer;
+  transition: all .2s ease;
+  user-select:none;
+  font-weight:700;
+  letter-spacing:.2px;
+  font-size:13px;
+}
+
+.pill.active {
+  background:#ffffff;
+  color:#121212;
+  border-color:#ffffff;
+  font-weight:800;
+}
+
+  .pill:hover {
+    border-color:#888;
+  }
+
+
+
+  .pill-group {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  align-items:center;
+}
+
+  /* ===== SCORECARDS USE COMFORTAA ===== */
+
+.score {
+  font-family:'Comfortaa', sans-serif;
+  font-size:2.2rem;
+  font-weight:700;
+  color:#ffffff !important;
+}
+
+.label {
+  font-family:'Comfortaa', sans-serif;
+  font-size:11px;
+  opacity:.7;
+  font-weight:600;
+  color:#ffffff !important;
+}
+
+  @media (max-width: 576px){
+    .score { font-size:1.5rem; }
+    .label { font-size:10px; }
+  }
+
+  /* ===== LAST UPDATED + SPINNER ===== */
+
+  .last-updated {
+    font-size:11px;
+    opacity:.6;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+    font-weight:500;
+  }
+
+  .spinner {
+    width:14px;
+    height:14px;
+    border:2px solid rgba(255,255,255,0.2);
+    border-top:2px solid #ffffff;
+    border-radius:50%;
+    animation: spin .7s linear infinite;
+    display:none;
+  }
+
+  @keyframes spin {
+    to { transform:rotate(360deg); }
+  }
+
+  /* ===== ROW UPDATE ===== */
+
+  .row-updated {
+    animation: highlightFade 2s ease forwards;
+  }
+
+  @keyframes highlightFade {
+    0% { background:#2e7d32; }
+    100% { background:transparent; }
+  }
+/* ===== INFO SECTION ===== */
+
+.info-section {
+  background:#1a1a1a;
+  border-radius:18px;
+}
+
+.info-text {
+  font-size:13px;
+  line-height:1.6;
+  color:#ffffff;     /* force white */
+}
+
+.info-text ul {
+  margin-top:8px;
+  margin-bottom:8px;
+}
+
+.info-text li {
+  margin-bottom:6px;
+}
+</style>
+</head>
+
+<body class="p-3">
+<div class="container-fluid">
+  
+  <!-- HERO HEADER -->
+<div class="hero-header mb-4">
+  <div class="hero-overlay">
+    <h1 class="hero-title">Dre Love Day 2026</h1>
+  </div>
+</div>
+
+  <!-- SCORECARDS -->
+  <div class="row g-3 mb-2" id="scorecards"></div>
+
+  <!-- LAST UPDATED -->
+  <div class="last-updated">
+    <div id="lastUpdated">Last updated: --</div>
+    <div class="spinner" id="refreshSpinner"></div>
+  </div>
+
+  <!-- TAB PILLS -->
+  <div class="card p-3 mb-3">
+    <div class="pill-group" id="tabPills"></div>
+  </div>
+
+  <!-- FILTER PILLS -->
+  <div class="card p-3 mb-3 d-none" id="filterArea"></div>
+<!-- TABLE -->
+  <div class="card p-3">
+    <div class="table-responsive">
+      <table class="table table-sm table-dark table-striped" id="mainTable"></table>
+    </div>
+  </div>
+
+<!-- INFO SECTION -->
+<div class="card p-4 mt-4 info-section">
+  <div class="info-text">
+    <p>
+      Abbiamo messo insieme questo sito per condividere i dati più importanti del lato organizzativo dell'evento.
+      In questo modo possiamo seguire gli sviluppi <span class="highlight-blue">insieme</span> e prendere decisioni corali quando serve.
+      Condividiamo il link solo con co-organizzatori: questo non é un sito promozionale per il pubblico.
+    </p>
+
+    <p>Sopra potete selezionare/visionare:</p>
+
+    <ul>
+      <li>la lista degli <span class="highlight-blue">artisti</span> maggiori (ovvero quelli che richiedono più impegno organizzativo, la lista intera è più lunga e verrà stilata in futuro)</li>
+      <li>la lista dei <span class="highlight-blue">referenti</span> dei vari aspetti organizzativi</li>
+      <li>lo schema spazi/<span class="highlight-blue">attività</span></li>
+      <li>il <span class="highlight-blue">programma</span> della giornata</li>
+    </ul>
+
+    <p>
+      Troverete <span class="highlight-blue">filtri</span> da attivare se disponibili.
+    </p>
+
+    <p>
+      I dati si aggiornano in tempo reale.
+      Il sito funziona meglio su laptop o in <span class="highlight-blue">orizzontale su smartphone</span>.
+    </p>
+  </div>
+</div>
+  
+  </div>
+
+<script>
+
+let DATA = {};
+let CURRENT_TAB = "artisti";
+let AUTO_REFRESH_INTERVAL = 60000;
+
+let PREVIOUS_DATA_SNAPSHOT = "";
+let PREVIOUS_ROWS = [];
+
+let FILTER_STATE = {};
+
+fetch("https://script.google.com/macros/s/AKfycbyqQEUYoEMP1tMddg6y55MNkINmuNCP7Iqnn9Osg1L7C7jN0yZSOo49j39MSXMUXBhe6g/exec")
+  .then(response => response.json())
+  .then(data => init(data));
+
+function init(data){
+  DATA = data;
+  PREVIOUS_DATA_SNAPSHOT = JSON.stringify(data);
+
+  buildTabs();
+  buildScorecards();
+  updateLastUpdated();
+  buildFilters();
+  renderTable();
+
+  setInterval(fetchFreshData, AUTO_REFRESH_INTERVAL);
+}
+
+/* ===== TABS ===== */
+
+function buildTabs(){
+  const tabs = ["artisti","referenti","attivitá","programma"];
+  const container = document.getElementById("tabPills");
+  container.innerHTML = "";
+
+  tabs.forEach(tab=>{
+    const pill = document.createElement("div");
+    pill.className = "pill" + (tab===CURRENT_TAB?" active":"");
+    pill.innerText = tab;
+    pill.onclick = ()=> switchTab(tab);
+    container.appendChild(pill);
+  });
+}
+
+function switchTab(tab){
+  CURRENT_TAB = tab;
+  FILTER_STATE = {};
+  buildTabs();
+  buildFilters();
+  renderTable();
+}
+
+/* ===== FILTERS ===== */
+
+function buildFilters(){
+
+  const area = document.getElementById("filterArea");
+  area.innerHTML = "";
+  area.classList.add("d-none");
+
+  if(CURRENT_TAB === "artisti"){
+    area.classList.remove("d-none");
+    buildPillGroup(area, "availability", ["ALL","Disponibile","No"]);
+  }
+
+  if(CURRENT_TAB === "programma"){
+    area.classList.remove("d-none");
+    buildPillGroup(area, "spazio", ["ALL","Mostra","DJ/Beat Set","Live"]);
+    buildPillGroup(area, "status", ["ALL","All Good","Things Needed","Problema"]);
+  }
+}
+
+function buildPillGroup(container, key, values){
+
+  const group = document.createElement("div");
+  group.className = "pill-group mb-2";
+
+  values.forEach(val=>{
+    const pill = document.createElement("div");
+    pill.className = "pill";
+    pill.innerText = val;
+
+    pill.onclick = ()=>{
+      toggleFilter(key,val);
+    };
+
+    group.appendChild(pill);
+  });
+
+  container.appendChild(group);
+}
+
+function toggleFilter(key,value){
+
+  if(!FILTER_STATE[key]) FILTER_STATE[key] = [];
+
+  if(value === "ALL"){
+    FILTER_STATE[key] = ["ALL"];
+  } else {
+    FILTER_STATE[key] = FILTER_STATE[key].filter(v=>v!=="ALL");
+    if(FILTER_STATE[key].includes(value)){
+      FILTER_STATE[key] = FILTER_STATE[key].filter(v=>v!==value);
+    } else {
+      FILTER_STATE[key].push(value);
+    }
+  }
+
+  updatePillStyles();
+  renderTable();
+}
+
+function updatePillStyles(){
+  document.querySelectorAll("#filterArea .pill").forEach(pill=>{
+    const key = pill.parentElement.previousSibling?.textContent;
+  });
+
+  document.querySelectorAll("#filterArea .pill").forEach(pill=>{
+    const value = pill.innerText;
+
+    let active = false;
+
+    Object.keys(FILTER_STATE).forEach(key=>{
+      if(FILTER_STATE[key].includes(value)) active = true;
+    });
+
+    pill.classList.toggle("active", active);
+  });
+}
+
+/* ===== TABLE ===== */
+
+function renderTable(){
+
+  const table = document.getElementById("mainTable");
+  const sheet = DATA[CURRENT_TAB];
+  if(!sheet || sheet.length<2){ table.innerHTML=""; return; }
+
+  const header = sheet[0];
+  let rows = sheet.slice(1);
+
+  rows = rows.filter(r=>{
+
+    if(CURRENT_TAB==="artisti" && FILTER_STATE.availability && !FILTER_STATE.availability.includes("ALL")){
+      if(FILTER_STATE.availability.length>0 && !FILTER_STATE.availability.includes(r[2])) return false;
+    }
+
+    if(CURRENT_TAB==="programma"){
+      if(FILTER_STATE.spazio && !FILTER_STATE.spazio.includes("ALL")){
+        if(FILTER_STATE.spazio.length>0 && !FILTER_STATE.spazio.includes(r[2])) return false;
+      }
+      if(FILTER_STATE.status && !FILTER_STATE.status.includes("ALL")){
+        if(FILTER_STATE.status.length>0 && !FILTER_STATE.status.includes(r[4])) return false;
+      }
+    }
+
+    return true;
+  });
+
+  let html="<thead><tr>";
+  header.forEach(h=> html+=`<th>${h}</th>`);
+  html+="</tr></thead><tbody>";
+
+  rows.forEach((r,i)=>{
+    const rowString = JSON.stringify(r);
+    const changed = PREVIOUS_ROWS[i]!==rowString;
+    html+= `<tr class="${changed?'row-updated':''}">`;
+    r.forEach(c=> html+=`<td>${c||""}</td>`);
+    html+="</tr>";
+  });
+
+  html+="</tbody>";
+  table.innerHTML = html;
+
+  PREVIOUS_ROWS = rows.map(r=>JSON.stringify(r));
+}
+
+/* ===== SCORECARDS ===== */
+
+function buildScorecards(){
+  const basics = DATA.basics;
+  if(!basics||basics.length<2) return;
+
+  const headers = basics[0];
+  const values = basics[1];
+  const container = document.getElementById("scorecards");
+  container.innerHTML="";
+
+  for(let i=0;i<4;i++){
+    container.innerHTML+=`
+      <div class="col-6 col-md-3">
+        <div class="card p-3 text-center">
+          <div class="label">${headers[i]||""}</div>
+          <div class="score">${values[i]||""}</div>
+        </div>
+      </div>`;
+  }
+}
+
+/* ===== SMART REFRESH ===== */
+
+function fetchFreshData(){
+
+  document.getElementById("refreshSpinner").style.display="block";
+
+  fetch("https://script.google.com/macros/s/AKfycbyqQEUYoEMP1tMddg6y55MNkINmuNCP7Iqnn9Osg1L7C7jN0yZSOo49j39MSXMUXBhe6g/exec")
+  .then(response => response.json())
+  .then(data => init(data));
+
+    document.getElementById("refreshSpinner").style.display="none";
+
+    const newSnapshot = JSON.stringify(newData);
+
+    if(newSnapshot===PREVIOUS_DATA_SNAPSHOT) return;
+
+    PREVIOUS_DATA_SNAPSHOT=newSnapshot;
+    DATA=newData;
+
+    buildScorecards();
+    renderTable();
+    updateLastUpdated();
+
+  }).getAllData();
+}
+
+function updateLastUpdated(){
+  const now=new Date();
+  const time=now.toLocaleTimeString('it-IT',{hour12:false});
+  document.getElementById("lastUpdated").innerText="Last updated: "+time;
+}
+
+</script>
+</body>
+</html>
