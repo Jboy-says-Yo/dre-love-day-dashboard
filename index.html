@@ -270,7 +270,7 @@ let PREVIOUS_ROWS = [];
 
 let FILTER_STATE = {};
 
-fetch("https://script.google.com/macros/s/AKfycbzZ7oyqED2F759nfMQ9WJ0-fGg5y1SSijvKdYJzsoW8PFfGDIqf_EW-hW9buHTnDN8/exec")
+fetch("https://script.google.com/macros/s/AKfycbx6dCqESg8oOZ9DSfqRqTV4opJbKoYo0iT43QYGYqN6j8G7KZWibbr1dDbw4keUu0vXEA/exec")
   .then(response => response.json())
   .then(data => init(data));
 
@@ -463,7 +463,7 @@ function fetchFreshData(){
 
   document.getElementById("refreshSpinner").style.display = "block";
 
-  fetch("https://script.google.com/macros/s/AKfycbzZ7oyqED2F759nfMQ9WJ0-fGg5y1SSijvKdYJzsoW8PFfGDIqf_EW-hW9buHTnDN8/exec")
+  fetch("https://script.google.com/macros/s/AKfycbx6dCqESg8oOZ9DSfqRqTV4opJbKoYo0iT43QYGYqN6j8G7KZWibbr1dDbw4keUu0vXEA/exec")
     .then(response => response.json())
     .then(newData => {
 
